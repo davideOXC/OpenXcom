@@ -78,3 +78,5 @@ Dependencies/
 nbproject/
 .tx/
 /makefile
+
+src/\.vs/OpenXcom\.2010/v15/
