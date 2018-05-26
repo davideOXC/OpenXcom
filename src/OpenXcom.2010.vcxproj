@@ -86,6 +86,14 @@
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EmbedManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</EmbedManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\GIT\Openxcom\deps\include;C:\GIT\Openxcom\deps\include\SDL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\GIT\Openxcom\deps\lib\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\GIT\Openxcom\deps\include;C:\GIT\Openxcom\deps\include\SDL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\GIT\Openxcom\deps\lib\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
