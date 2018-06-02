@@ -16,32 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <sstream>
+#include <cstdlib>
+
+#include "Globe.h"
+#include "GeoscapeState.h"
 #include "DogfightBaseState.h"
 #include "DogfightState.h"
-#include <sstream>
+
 #include "../Engine/Game.h"
-#include "../Resource/ResourcePack.h"
+#include "../Mod/Mod.h"
 #include "../Interface/ImageButton.h"
 #include "../Interface/Text.h"
-#include "Globe.h"
+
 #include "../Savegame/SavedGame.h"
 #include "../Savegame/Craft.h"
-#include "../Ruleset/RuleCraft.h"
+#include "../Mod/RuleCraft.h"
 #include "../Savegame/CraftWeapon.h"
-#include "../Ruleset/RuleCraftWeapon.h"
+#include "../Mod/RuleCraftWeapon.h"
 #include "../Savegame/Ufo.h"
-#include "../Ruleset/RuleUfo.h"
+#include "../Mod/RuleUfo.h"
 #include "../Engine/Music.h"
 #include "../Engine/RNG.h"
 #include "../Engine/Sound.h"
 #include "../Savegame/Base.h"
 #include "../Savegame/CraftWeaponProjectile.h"
 #include "../Savegame/Country.h"
-#include "../Ruleset/RuleCountry.h"
+#include "../Mod/RuleCountry.h"
 #include "../Savegame/Region.h"
-#include "../Ruleset/RuleRegion.h"
+#include "../Mod/RuleRegion.h"
 #include "../Savegame/AlienMission.h"
-#include <cstdlib>
+
 
 namespace OpenXcom
 {
@@ -49,11 +54,11 @@ namespace OpenXcom
 /**
  * Initializes all the elements in the Dogfight window.
  * @param game Pointer to the core game.
- * @param globe Pointer to the Geoscape globe.
+ * @param g Pointer to the Geoscape globe.
  * @param craft Pointer to the craft intercepting.
  * @param ufo Pointer to the UFO being intercepted.
  */
-DogfightBaseState::DogfightBaseState(Globe *globe, Base *base, Ufo *ufo) : DogfightState(globe, base->getBaseCraft(), ufo, "INTERWIN2.DAT"), _base(base), _ufoAttacked(false)
+DogfightBaseState::DogfightBaseState(GeoscapeState *state, Base *base, Ufo *ufo) : DogfightState(state, base->getBaseCraft(), ufo, "INTERWIN2.DAT"), _base(base), _ufoAttacked(false)
 {
 	_btnAggressive->setVisible(false);
 	_base->getBaseCraft()->setDestination(ufo);
@@ -107,7 +112,7 @@ void DogfightBaseState::update()
 				finalRun = true;
 				// TODO: set status
 				//setStatus("STR_UFO_OUTRUNNING_INTERCEPTOR");
-				_ufo->setSpeed(_ufo->getRules()->getMaxSpeed());
+				_ufo->setSpeed(_ufo->getRules()->getStats().speedMax);
 			}
 		}
 	}
@@ -187,7 +192,7 @@ void DogfightBaseState::update()
 						}
 
 						setStatus("STR_UFO_HIT");
-						_game->getResourcePack()->getSound("GEO.CAT", ResourcePack::UFO_HIT)->play();
+						_game->getMod()->getSound("GEO.CAT", Mod::UFO_HIT)->play();
 						p->remove();
 					}
 					// Missed.
@@ -240,40 +245,18 @@ void DogfightBaseState::update()
 			{
 				continue;
 			}
-			int wTimer;
-			if (i == 0)
-			{
-				wTimer = _w1FireCountdown;
-			}
-			else
-			{
-				wTimer = _w2FireCountdown;
-			}
-
+			int wTimer = this->getWeaponFireCountdown(i);
+			
 			// Handle weapon firing
 			if (wTimer == 0 && _currentDist <= w->getRules()->getRange() * 8 && w->getAmmo() > 0 && _mode != _btnStandoff 
 				&& _mode != _btnDisengage && !_ufo->isCrashed())
 			{
 				_ufoAttacked = true;
-				if (i == 0)
-				{
-					fireWeapon1();
-				}
-				else
-				{
-					fireWeapon2();
-				}
+				fireWeapon(i);
 			}
 			else if (wTimer > 0)
 			{
-				if (i == 0)
-				{
-					_w1FireCountdown--;
-				}
-				else
-				{
-					_w2FireCountdown--;
-				}
+				decWeaponFireCountdown(i);
 			}
 		}
 	}
@@ -320,10 +303,10 @@ void DogfightBaseState::update()
 				// Difference from original: No retaliation until final UFO lands (Original: Is spawned).
 				if (!_game->getSavedGame()->findAlienMission(targetRegion, OBJECTIVE_RETALIATION))
 				{
-					const RuleAlienMission &rule = *_game->getRuleset()->getAlienMission("STR_ALIEN_RETALIATION");
+					const RuleAlienMission &rule = *_game->getMod()->getAlienMission("STR_ALIEN_RETALIATION");
 					AlienMission *mission = new AlienMission(rule);
 					mission->setId(_game->getSavedGame()->getId("ALIEN_MISSIONS"));
-					mission->setRegion(targetRegion, *_game->getRuleset());
+					mission->setRegion(targetRegion, *_game->getMod());
 					mission->setRace(_ufo->getAlienRace());
 					mission->start();
 					_game->getSavedGame()->getAlienMissions().push_back(mission);
@@ -351,7 +334,7 @@ void DogfightBaseState::update()
 						}
 					}
 					setStatus("STR_UFO_DESTROYED");
-					_game->getResourcePack()->getSound("GEO.CAT", ResourcePack::UFO_EXPLODE)->play(); //11
+					_game->getMod()->getSound("GEO.CAT", Mod::UFO_EXPLODE)->play(); //11
 				}
 				_destroyUfo = true;
 			}
@@ -360,7 +343,7 @@ void DogfightBaseState::update()
 				if (_ufo->getShotDownByCraftId() == _craft->getUniqueId())
 				{
 					setStatus("STR_UFO_CRASH_LANDS");
-					_game->getResourcePack()->getSound("GEO.CAT", ResourcePack::UFO_CRASH)->play(); //10
+					_game->getMod()->getSound("GEO.CAT", Mod::UFO_CRASH)->play(); //10
 					for (std::vector<Country*>::iterator country = _game->getSavedGame()->getCountries()->begin(); country != _game->getSavedGame()->getCountries()->end(); ++country)
 					{
 						if ((*country)->getRules()->insideCountry(_ufo->getLongitude(), _ufo->getLatitude()))
@@ -378,7 +361,7 @@ void DogfightBaseState::update()
 						}
 					}
 				}
-				if (!_globe->insideLand(_ufo->getLongitude(), _ufo->getLatitude()))
+				if (!_state->getGlobe()->insideLand(_ufo->getLongitude(), _ufo->getLatitude()))
 				{
 					_ufo->setStatus(Ufo::DESTROYED);
 					_destroyUfo = true;
@@ -437,18 +420,19 @@ void DogfightBaseState::btnMinimizeClick(Action *)
 			_btnUfo->setVisible(false);
 			_btnMinimize->setVisible(false);
 			_battle->setVisible(false);
-			_weapon1->setVisible(false);
-			_range1->setVisible(false);
-			_weapon2->setVisible(false);
-			_range2->setVisible(false);
 			_damage->setVisible(false);
-			_txtAmmo1->setVisible(false);
-			_txtAmmo2->setVisible(false);
 			_txtDistance->setVisible(false);
 			_preview->setVisible(false);
 			_txtStatus->setVisible(false);
 			_btnMinimizedIcon->setVisible(true);
 			_txtInterceptionNumber->setVisible(true);
+
+			for(int i = 0; i < RuleCraft::WeaponMax; i++)
+			{
+				_weapon[i]->setVisible(false);
+				_range[i]->setVisible(false);
+				_txtAmmo[i]->setVisible(false);
+			}
 		}
 		else
 		{
@@ -492,13 +476,14 @@ void DogfightBaseState::btnStandardPress(Action *)
 	{
 		_end = false;
 		setStatus("STR_STANDARD_ATTACK");
-		if (_craft->getRules()->getWeapons() > 0 && _craft->getWeapons()->at(0) != 0)
+
+		for (int i = 0; i < RuleCraft::WeaponMax; i++)
 		{
-			_w1FireInterval = _craft->getWeapons()->at(0)->getRules()->getStandardReload();
-		}
-		if (_craft->getRules()->getWeapons() > 1 && _craft->getWeapons()->at(1) != 0)
-		{
-			_w2FireInterval = _craft->getWeapons()->at(1)->getRules()->getStandardReload();
+			if (_craft->getRules()->getWeapons() > i && _craft->getWeapons()->at(i) != 0)
+			{
+				_weaponFireInterval[i] = _craft->getWeapons()->at(i)->getRules()->getStandardReload();
+			}
+			
 		}
 //		maximumDistance();
 	}

@@ -1290,7 +1290,7 @@ void GeoscapeState::time5Seconds()
 					if ((*i)->getBaseCraft() == 0) break;
 
 					// Try to shot down the UFO.
-					_dogfightsToBeStarted.push_back(static_cast<DogfightState*>(new DogfightBaseState(_globe, *i, *u)));
+					_dogfightsToBeStarted.push_back(static_cast<DogfightState*>(new DogfightBaseState(this, *i, *u)));
 					if (!_dogfightStartTimer->isRunning())
 					{
 						_pause = true;
@@ -1299,7 +1299,7 @@ void GeoscapeState::time5Seconds()
 						startDogfight();
 						_dogfightStartTimer->start();
 					}
-					_game->getResourcePack()->playMusic("GMINTER", true);
+					_game->getMod()->playMusic("GMINTER", true);
 
 					// Only one target per base.
 					break;

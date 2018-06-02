@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "GeoscapeState.h"
 #include "DogfightState.h"
 #include <cmath>
 #include <sstream>
-#include "GeoscapeState.h"
 #include "../Engine/Game.h"
 #include "../Engine/Screen.h"
 #include "../Engine/LocalizedText.h"
@@ -246,7 +246,6 @@ DogfightState::DogfightState(GeoscapeState *state, Craft *craft, Ufo *ufo, bool 
 	_end(false), _endUfoHandled(false), _endCraftHandled(false), _ufoBreakingOff(false), _hunterKillerBreakingOff(false), _destroyUfo(false), _destroyCraft(false),
 	_minimized(false), _endDogfight(false), _animatingHit(false), _waitForPoly(false), _waitForAltitude(false), _ufoSize(0), _craftHeight(0), _currentCraftDamageColor(0),
 	_interceptionNumber(0), _interceptionsCount(0), _x(0), _y(0), _minimizedIconX(0), _minimizedIconY(0), _firedAtLeastOnce(false)
-	, _w1FireCountdown(0), _w2FireCountdown(0), _weapon1Enabled(true), _weapon2Enabled(true) 
 {
 	_screen = false;
 	_craft->setInDogfight(true);

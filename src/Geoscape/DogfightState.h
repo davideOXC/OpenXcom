@@ -92,6 +92,11 @@ public:
 	// Fires the weapons.
 	void fireWeapon(int i);
 	// Fires UFO weapon.
+
+	int getWeaponFireInterval(int i) { return _weaponFireInterval[i];  }
+	int getWeaponFireCountdown(int i) { return _weaponFireCountdown[i]; }
+	void decWeaponFireCountdown(int i) { _weaponFireCountdown[i] = _weaponFireCountdown[i] - 1; }
+
 	void ufoFireWeapon();
 	// Sets the craft to minimum distance.
 	void minimumDistance();

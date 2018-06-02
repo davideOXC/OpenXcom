@@ -1487,7 +1487,7 @@ int Base::countdownDefenseRecharge()
  */
 bool Base::isDefenseCanBeActivated() const
 {
-	return _rule->isDefenseWorks() && !_defenses.empty();
+	return _mod->isDefenseWorks() && !_defenses.empty();
 }
 
 /**
@@ -1545,7 +1545,7 @@ Craft *Base::newBaseCraft()
 {
 	if (_defenses.empty()) return 0;
 
-	RuleCraft *ruleCraft = _rule->getCraft("STR_BASE");
+	RuleCraft *ruleCraft = _mod->getCraft("STR_BASE");
 	if (ruleCraft == 0 || ruleCraft->getWeapons() == 0) return 0;
 
 	Craft *craft = new Craft(ruleCraft, this, 0);
@@ -1614,7 +1614,7 @@ void Base::reloadBaseCraft()
 		// quantity of rounds = quantity of defenses * max ammo for this defense
 		if (bestDefense != numDefenses.end())
 		{
-			RuleCraftWeapon *ruleCW = _rule->getCraftWeapon(bestDefense->first->getType());
+			RuleCraftWeapon *ruleCW = _mod->getCraftWeapon(bestDefense->first->getType());
 			if (ruleCW != 0)
 			{
 				(*w) = new CraftWeapon(ruleCW, bestDefense->second * ruleCW->getAmmoMax());
@@ -1664,9 +1664,9 @@ void Base::setRechargeDefense(bool ufoAttacked)
 {
 	_reloadBaseCraft = ufoAttacked;
 	// 60 sec/min / 5 sec/inc = 12 inc/min
-	_defenseRechargeTimeCounter = 12 * _rule->getDefenseRechargeTime();
+	_defenseRechargeTimeCounter = 12 * _mod->getDefenseRechargeTime();
 
-	if (ufoAttacked && RNG::percent(_rule->getDefenseRetaliationChance()))
+	if (ufoAttacked && RNG::percent(_mod->getDefenseRetaliationChance()))
 	{
 		setRetaliationTarget(true);
 	}

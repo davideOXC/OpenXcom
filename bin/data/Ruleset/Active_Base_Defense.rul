@@ -19,7 +19,7 @@ craftWeapons:
     range: 40           # range in pixels: (range for facility)/4; i.e. 160/4 = 40
     accuracy: 50        # the same as for defence facility
     reloadStandard: 72
-    ammoMax: 5          # maximum ammo for each defence facility
+    ammoMax: 6          # maximum ammo for each defence facility
     launcher: STR_AVALANCHE_LAUNCHER
     projectileType: 1
     projectileSpeed: 8
@@ -30,7 +30,7 @@ craftWeapons:
     range: 50           # 200/4 = 50
     accuracy: 60
     reloadStandard: 24
-    ammoMax: 5
+    ammoMax: 10
     launcher: STR_LASER_CANNON
     projectileType: 4
   - type: STR_PLASMA_DEFENSES
@@ -40,7 +40,7 @@ craftWeapons:
     range: 60           # 240/4 = 60
     accuracy: 70
     reloadStandard: 24
-    ammoMax: 5
+    ammoMax: 10
     launcher: STR_PLASMA_BEAM
     projectileType: 5
   - type: STR_FUSION_BALL_DEFENSES

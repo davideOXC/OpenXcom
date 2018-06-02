@@ -31,10 +31,11 @@ class Text;
 class Surface;
 class InteractiveSurface;
 class Timer;
-class Globe;
+class GeoscapeState;
 class Craft;
 class Ufo;
 class CraftWeaponProjectile;
+class Base;
 
 /**
  * Shows a dogfight between a player base and an UFO.
@@ -47,7 +48,7 @@ private:
 
 public:
 	/// Creates the Dogfight state.
-	DogfightBaseState(Globe *globe, Base *base, Ufo *ufo);
+	DogfightBaseState(GeoscapeState *state, Base *base, Ufo *ufo);
 	/// Cleans up the Dogfight state.
 	~DogfightBaseState();
 	/// Moves the craft.
