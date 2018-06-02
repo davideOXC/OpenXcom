@@ -296,6 +296,7 @@ Mod::Mod() :
 	_baseDefenseMapFromLocation(0),
 	_facilityListOrder(0), _craftListOrder(0), _itemCategoryListOrder(0), _itemListOrder(0),
 	_researchListOrder(0),  _manufactureListOrder(0), _ufopaediaListOrder(0), _invListOrder(0), _soldierListOrder(0), _modOffset(0)
+	, _defenseRechargeTime(0), _defenseRetaliationChance(0)
 {
 	_muteMusic = new Music();
 	_muteSound = new Sound();
@@ -1360,6 +1361,11 @@ void Mod::loadFile(const std::string &filename, ModScript &parsers)
 		{
 			_startingBase[i->first.as<std::string>()] = YAML::Node(i->second);
 		}
+	}
+	if (const YAML::Node &nodeBd = doc["defense"])
+	{
+		_defenseRechargeTime      = nodeBd["rechargeTime"].as<int>(_defenseRechargeTime);
+		_defenseRetaliationChance = nodeBd["retaliationChance"].as<int>(_defenseRetaliationChance);
 	}
 	if (doc["startingTime"])
 	{
