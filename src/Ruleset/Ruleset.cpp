@@ -274,6 +274,9 @@ public:
 /**
  * Creates an empty mod.
  */
+ Ruleset::Ruleset() : _costSoldier(0), _costEngineer(0), _costScientist(0), _timePersonnel(0), _initialFunding(0), _turnAIUseGrenade(3), _turnAIUseBlaster(3), _startingTime(6, 1, 1, 1999, 12, 0, 0), _modIndex(0), _facilityListOrder(0), _craftListOrder(0), _itemListOrder(0), _researchListOrder(0),  _manufactureListOrder(0), _ufopaediaListOrder(0), _invListOrder(0)
+Ruleset::Ruleset() :  _costSoldier(0), _costEngineer(0), _costScientist(0), _timePersonnel(0), _initialFunding(0), _turnAIUseGrenade(3), _turnAIUseBlaster(3), _startingTime(6, 1, 1, 1999, 12, 0, 0), _modIndex(0), _facilityListOrder(0), _craftListOrder(0), _itemListOrder(0), _researchListOrder(0),  _manufactureListOrder(0), _ufopaediaListOrder(0), _invListOrder(0)
+
 Mod::Mod() :
 	_maxViewDistance(20), _maxDarknessToSeeUnits(9), _maxStaticLightDistance(16), _maxDynamicLightDistance(24), _enhancedLighting(0),
 	_costHireEngineer(0), _costHireScientist(0),
@@ -296,6 +299,7 @@ Mod::Mod() :
 	_baseDefenseMapFromLocation(0),
 	_facilityListOrder(0), _craftListOrder(0), _itemCategoryListOrder(0), _itemListOrder(0),
 	_researchListOrder(0),  _manufactureListOrder(0), _ufopaediaListOrder(0), _invListOrder(0), _soldierListOrder(0), _modOffset(0)
+	, _defenseRechargeTime(0), _defenseRetaliationChance(0)
 {
 	_muteMusic = new Music();
 	_muteSound = new Sound();
@@ -1360,6 +1364,11 @@ void Mod::loadFile(const std::string &filename, ModScript &parsers)
 		{
 			_startingBase[i->first.as<std::string>()] = YAML::Node(i->second);
 		}
+	}
+	if (const YAML::Node &nodeBd = doc["defense"])
+	{
+		_defenseRechargeTime      = nodeBd["rechargeTime"].as<int>(_defenseRechargeTime);
+		_defenseRetaliationChance = nodeBd["retaliationChance"].as<int>(_defenseRetaliationChance);
 	}
 	if (doc["startingTime"])
 	{

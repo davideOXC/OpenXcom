@@ -239,13 +239,14 @@ const int DogfightState::_projectileBlobs[4][6][3] =
  * @param ufo Pointer to the UFO being intercepted.
  * @param ufoIsAttacking Is UFO the aggressor?
  */
-DogfightState::DogfightState(GeoscapeState *state, Craft *craft, Ufo *ufo, bool ufoIsAttacking) :
+DogfightState::DogfightState(GeoscapeState *state, Craft *craft, Ufo *ufo, bool ufoIsAttacking, const std::string &interwin) :
 	_state(state), _craft(craft), _ufo(ufo),
 	_ufoIsAttacking(ufoIsAttacking), _disableDisengage(false), _disableCautious(false),
 	_timeout(50), _currentDist(640), _targetDist(560),
 	_end(false), _endUfoHandled(false), _endCraftHandled(false), _ufoBreakingOff(false), _hunterKillerBreakingOff(false), _destroyUfo(false), _destroyCraft(false),
 	_minimized(false), _endDogfight(false), _animatingHit(false), _waitForPoly(false), _waitForAltitude(false), _ufoSize(0), _craftHeight(0), _currentCraftDamageColor(0),
 	_interceptionNumber(0), _interceptionsCount(0), _x(0), _y(0), _minimizedIconX(0), _minimizedIconY(0), _firedAtLeastOnce(false)
+	, _w1FireCountdown(0), _w2FireCountdown(0), _weapon1Enabled(true), _weapon2Enabled(true) 
 {
 	_screen = false;
 	_craft->setInDogfight(true);
@@ -359,8 +360,15 @@ DogfightState::DogfightState(GeoscapeState *state, Craft *craft, Ufo *ufo, bool 
 	// Set up objects
 	RuleInterface *dogfightInterface = _game->getMod()->getInterface("dogfight");
 
-	Surface *graphic;
-	graphic = _game->getMod()->getSurface("INTERWIN.DAT");
+	Surface *graphic = 0;
+	if (!interwin.empty())
+	{
+		graphic = _game->getMod()->getSurface(interwin);
+	}
+	if (graphic == 0)
+	{
+		graphic = _game->getMod()->getSurface("INTERWIN.DAT");
+	}
 	graphic->setX(0);
 	graphic->setY(0);
 	graphic->getCrop()->x = 0;

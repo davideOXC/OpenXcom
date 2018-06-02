@@ -178,6 +178,7 @@ private:
 	int _defeatScore, _defeatFunds;
 	std::pair<std::string, int> _alienFuel;
 	std::string _fontName, _finalResearch, _psiUnlockResearch;
+	int _defenseRechargeTime, _defenseRetaliationChance;
 	YAML::Node _startingBase;
 	GameTime _startingTime;
 	int _startingDifficulty;
@@ -400,6 +401,12 @@ public:
 	/// Gets the inventory list.
 	std::map<std::string, RuleInventory*> *getInventories();
 	/// Gets the ruleset for a specific inventory.
+	/// Gets the defense's cooldown value.
+	int getDefenseRechargeTime() const       {return _defenseRechargeTime;}
+	/// Checks possibility of using active defense.
+	bool isDefenseWorks() const              {return _defenseRechargeTime > 0;}
+	/// Gets chance of detection Xcom base by aliens during ground to air attack.
+	int getDefenseRetaliationChance() const  {return _defenseRetaliationChance;}
 	RuleInventory *getInventory(const std::string &id, bool error = false) const;
 	/// Gets max view distance in BattleScape.
 	int getMaxViewDistance() const { return _maxViewDistance; }

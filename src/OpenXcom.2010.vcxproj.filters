@@ -784,6 +784,9 @@
     <ClCompile Include="Battlescape\PsiAttackBState.cpp">
       <Filter>Battlescape</Filter>
     </ClCompile>
+    <ClCompile Include="Geoscape\DogfightBaseState.cpp">
+      <Filter>Geoscape</Filter>
+    </ClCompile>
     <ClCompile Include="Geoscape\DogfightErrorState.cpp">
       <Filter>Geoscape</Filter>
     </ClCompile>
@@ -1868,6 +1871,9 @@
     </ClInclude>
     <ClInclude Include="Battlescape\PsiAttackBState.h">
       <Filter>Battlescape</Filter>
+    </ClInclude>
+    <ClInclude Include="Geoscape\DogfightBaseState.h">
+      <Filter>Geoscape</Filter>
     </ClInclude>
     <ClInclude Include="Geoscape\DogfightErrorState.h">
       <Filter>Geoscape</Filter>

@@ -22,6 +22,7 @@
 #include "../Mod/Mod.h"
 #include "../Engine/LocalizedText.h"
 #include "../Interface/TextButton.h"
+#include "../Interface/ToggleTextButton.h"
 #include "../Interface/Window.h"
 #include "../Interface/Text.h"
 #include "../Interface/TextList.h"
@@ -55,11 +56,13 @@ InterceptState::InterceptState(Globe *globe, Base *base, Target *target) : _glob
 	const int WIDTH_BASE = 74;
 	const int WIDTH_WEAPONS = 48;
 	_screen = false;
+	bool showBtnDefense = _base != 0 && _base->isDefenseCanBeActivated();
 
 	// Create objects
-	_window = new Window(this, 320, 140, 0, 30, POPUP_HORIZONTAL);
+	_window = new Window(this, 320, showBtnDefense? 160 : 140, 0, 30, POPUP_HORIZONTAL);
 	_btnCancel = new TextButton(_base ? 142 : 288, 16, 16, 146);
 	_btnGotoBase = new TextButton(142, 16, 162, 146);
+	_btnActivateBaseDefense = new ToggleTextButton(288, 14, 16, 166);
 	_txtTitle = new Text(300, 17, 10, 46);
 	int x = 14;
 	_txtCraft = new Text(WIDTH_CRAFT, 9, x, 70);
@@ -77,6 +80,7 @@ InterceptState::InterceptState(Globe *globe, Base *base, Target *target) : _glob
 	add(_window, "window", "intercept");
 	add(_btnCancel, "button", "intercept");
 	add(_btnGotoBase, "button", "intercept");
+	add(_btnActivateBaseDefense, "button", "intercept");
 	add(_txtTitle, "text1", "intercept");
 	add(_txtCraft, "text2", "intercept");
 	add(_txtStatus, "text2", "intercept");
@@ -97,6 +101,10 @@ InterceptState::InterceptState(Globe *globe, Base *base, Target *target) : _glob
 	_btnGotoBase->setText(tr("STR_GO_TO_BASE"));
 	_btnGotoBase->onMouseClick((ActionHandler)&InterceptState::btnGotoBaseClick);
 	_btnGotoBase->setVisible(_base != 0);
+
+	_btnActivateBaseDefense->setText(tr("STR_ACTIVATE_DEFENSE"));
+	_btnActivateBaseDefense->setVisible(showBtnDefense);
+	_btnActivateBaseDefense->setPressed(_base != 0 && _base->isDefenseActive());
 
 	_txtTitle->setAlign(ALIGN_CENTER);
 	_txtTitle->setBig();
@@ -259,7 +267,10 @@ InterceptState::InterceptState(Globe *globe, Base *base, Target *target) : _glob
  */
 InterceptState::~InterceptState()
 {
-
+	if (_base != 0)
+	{
+		_base->setActiveDefense(_btnActivateBaseDefense->getPressed());
+	}
 }
 
 /**

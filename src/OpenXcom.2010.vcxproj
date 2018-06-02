@@ -383,6 +383,7 @@
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\Zoom.cpp" />
     <ClCompile Include="Geoscape\AlienBaseState.cpp" />
+    <ClCompile Include="Geoscape\DogfightBaseState.cpp" />
     <ClCompile Include="Geoscape\AllocateTrainingState.cpp" />
     <ClCompile Include="Geoscape\CraftNotEnoughPilotsState.cpp" />
     <ClCompile Include="Geoscape\DogfightErrorState.cpp" />
@@ -753,6 +754,7 @@
     <ClInclude Include="Engine\Zoom.h" />
     <ClInclude Include="fmath.h" />
     <ClInclude Include="Geoscape\AlienBaseState.h" />
+    <ClInclude Include="Geoscape\DogfightBaseState.h" />
     <ClInclude Include="Geoscape\AllocateTrainingState.h" />
     <ClInclude Include="Geoscape\Cord.h" />
     <ClInclude Include="Geoscape\CraftNotEnoughPilotsState.h" />
